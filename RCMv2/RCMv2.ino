@@ -2,13 +2,15 @@
 //   https://github.com/rcmgames/RCMv2
 //   for information see this page: https://github.com/RCMgames
 
+#include "ICM20948_helper.h"
+
 /**
 uncomment one of the following lines depending on which hardware you have
 Remember to also choose the "environment" of your board in PlatformIO
 */
-#define RCM_HARDWARE_VERSION RCM_ORIGINAL // versions 1, 2, 3, and 3.1 of the original RCM hardware // https://github.com/RCMgames/RCM_hardware_documentation_and_user_guide
+// #define RCM_HARDWARE_VERSION RCM_ORIGINAL // versions 1, 2, 3, and 3.1 of the original RCM hardware // https://github.com/RCMgames/RCM_hardware_documentation_and_user_guide
 // #define RCM_HARDWARE_VERSION RCM_BYTE_V2 // version 2 of the RCM BYTE // https://github.com/RCMgames/RCM-Hardware-BYTE
-// #define RCM_HARDWARE_VERSION RCM_NIBBLE_V1 // version 1 of the RCM Nibble // https://github.com/RCMgames/RCM-Hardware-Nibble
+#define RCM_HARDWARE_VERSION RCM_NIBBLE_V1 // version 1 of the RCM Nibble // https://github.com/RCMgames/RCM-Hardware-Nibble
 // #define RCM_HARDWARE_VERSION RCM_4_V1 // version 1 of the RCM 4 // https://github.com/RCMgames/RCM-Hardware-V4
 
 /**
@@ -24,6 +26,28 @@ uncomment one of the following lines depending on which communication method you
 // https://github.com/RCMgames/useful-code/tree/main/boards
 // See this page for information about how to set up a robot's drivetrain using the JMotor library
 // https://github.com/joshua-8/JMotor/wiki/How-to-set-up-a-drivetrain
+// all the servo drivers
+JMotorDriverEsp32Servo servo1Driver = JMotorDriverEsp32Servo(port1);
+JMotorDriverEsp32Servo servo2Driver = JMotorDriverEsp32Servo(port2);
+JMotorDriverEsp32Servo servo3Driver = JMotorDriverEsp32Servo(port3);
+JMotorDriverEsp32Servo servo4Driver = JMotorDriverEsp32Servo(port4);
+
+// all the motor drivers
+JMotorDriverTMC7300 motor1Driver = JMotorDriverTMC7300(portA);
+JMotorDriverTMC7300 motor2Driver = JMotorDriverTMC7300(portB);
+JMotorDriverTMC7300 motor3Driver = JMotorDriverTMC7300(portC);
+JMotorDriverTMC7300 motor4Driver = JMotorDriverTMC7300(portD);
+
+// variables for the drivers
+float servo1Val = 0;
+float servo2Val = 0;
+float servo3Val = 0;
+float servo4Val = 0;
+
+float motor1Val = 0;
+float motor2Val = 0;
+float motor3Val = 0;
+float motor4Val = 0;
 
 void Enabled()
 {
@@ -43,12 +67,16 @@ void Disable()
 void PowerOn()
 {
     // runs once on robot startup, set pin modes and use begin() if applicable here
+    nibbleSetupImu();
+    servo4Driver.enable();
 }
 
 void Always()
 {
     // always runs if void loop is running, JMotor run() functions should be put here
     // (but only the "top level", for example if you call drivetrainController.run() you shouldn't also call leftMotorController.run())
+    runIMU();
+    servo4Driver.set(imu.roll / 180);
     delay(1);
 }
 
