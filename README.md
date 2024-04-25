@@ -1,6 +1,8 @@
 
 ### open in VSCode (using [PlatformIO](https://platformio.org/platformio-ide)), or use the Arduino IDE.
 
-based on https://github.com/RCMgames/RCMv2
+This program is based on the [RCMv2](https://github.com/RCMgames/RCMv2) template.
 
-Tested on an RCM Nibble v1.5 https://github.com/RCMgames/RCM-Hardware-Nibble
+Tested using a RCM Nibble v1.5 https://github.com/RCMgames/RCM-Hardware-Nibble
+
+Tested using an Adafruit QT Py ESP32-C3
