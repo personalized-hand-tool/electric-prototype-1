@@ -17,48 +17,17 @@ extern void WifiDataToParse();
 extern void WifiDataToSend();
 extern void setupMotors();
 
-#if RCM_HARDWARE_VERSION == RCM_ORIGINAL || RCM_HARDWARE_VERSION == RCM_4_V1
-
 void setupRSL()
 {
-    pinMode(ONBOARD_LED, OUTPUT);
-}
-void enabledRSL()
-{
-    digitalWrite(ONBOARD_LED, millis() % 500 < 250); // flash, enabled
-}
-void wifiFailRSL()
-{
-    digitalWrite(ONBOARD_LED, millis() % 1000 <= 100); // short flash, wifi connection fail
-}
-void wifiDisconnectedRSL()
-{
-    digitalWrite(ONBOARD_LED, millis() % 1000 >= 100); // long flash, no driver station connected
-}
-void disabledRSL()
-{
-    digitalWrite(ONBOARD_LED, HIGH); // on, disabled
-}
-
-#elif RCM_HARDWARE_VERSION == RCM_BYTE_V2 || RCM_HARDWARE_VERSION == RCM_NIBBLE_V1
-
-void setupRSL()
-{
-#if defined(NEOPIXEL_POWER)
-    pinMode(NEOPIXEL_POWER, OUTPUT);
-    digitalWrite(NEOPIXEL_POWER, HIGH);
-#endif
-    FastLED.addLeds<NEOPIXEL, PIN_NEOPIXEL>(RSL_leds, 1);
-    RSL = CRGB(0, 0, 0);
-    FastLED.show();
+    pixels.begin();
 }
 void enabledRSL()
 {
 #ifndef OVERWRITE_RSL
     if (millis() % 500 < 250) {
-        setRSL(RSLcolor);
+        setRSL(true);
     } else {
-        setRSL(CRGB(0, 0, 0));
+        setRSL(false);
     }
 #endif
 }
@@ -66,9 +35,9 @@ void wifiFailRSL()
 {
 #ifndef OVERWRITE_RSL
     if (millis() % 1000 <= 100) {
-        setRSL(RSLcolor);
+        setRSL(true);
     } else {
-        setRSL(CRGB(0, 0, 0));
+        setRSL(false);
     }
 #endif
 }
@@ -76,20 +45,19 @@ void wifiDisconnectedRSL()
 {
 #ifndef OVERWRITE_RSL
     if (millis() % 1000 >= 100) {
-        setRSL(RSLcolor);
+        setRSL(true);
     } else {
-        setRSL(CRGB(0, 0, 0));
+        setRSL(false);
     }
 #endif
 }
 void disabledRSL()
 {
 #ifndef OVERWRITE_RSL
-    setRSL(RSLcolor);
+    setRSL(true);
 #endif
 }
 
-#endif
 
 void setup()
 {
